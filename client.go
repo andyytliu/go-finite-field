@@ -18,6 +18,7 @@ var (
 	solutionsFile string
 	writeFile string
 	numEqToSolve int
+	blockSize int
 )
 
 func main() {
@@ -28,6 +29,7 @@ func main() {
 	flag.StringVar(&solutionsFile, "read_solutions", "", "Read in existing solutions")
 	flag.StringVar(&writeFile, "write_solutions", "", "Write solutions to file")
 	flag.IntVar(&numEqToSolve, "solve_equations", 0, "Solve a given number of equations")
+	flag.IntVar(&blockSize, "set_block", 0, "Set the block size in equation solving")
 	flag.Parse()
 
 
@@ -46,6 +48,13 @@ func main() {
 		}
 		fmt.Printf("# of equations: %v\n", reply.NumEq)
 		fmt.Printf("# of solutions: %v\n", reply.NumSol)
+	} else
+
+	if blockSize > 0 {
+		err = client.Call("Handler.SetBlock", blockSize, &reply)
+		if err != nil {
+			fmt.Println("error in client: " + err.Error())
+		}
 	} else
 
 	if equationsFile != "" {

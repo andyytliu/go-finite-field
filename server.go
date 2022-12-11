@@ -38,6 +38,16 @@ func (handler *Handler) Status(_ int, reply *Reply) error {
 	return nil
 }
 
+func (handler *Handler) SetBlock(size int, reply *Reply) error {
+	go func() {
+		handler.Channel <- struct{}{}
+		blockSolveSize = size
+		log.Printf("*********** Set block size to: %v\n", size)
+		<- handler.Channel
+	}()
+	return nil
+}
+
 func (handler *Handler) ReadEquations(fileName string, reply *Reply) error {
 	go func() {
 		handler.Channel <- struct{}{}
@@ -139,13 +149,19 @@ func main() {
     }
     log.SetOutput(file)
 
+	log.Println("***********************************")
     log.Println("*********** Start logging")
-	log.Printf("*********** # NumCPU: %v\n", runtime.NumCPU())
-	log.Printf("*********** # GOMAXPROCS : %v\n", runtime.GOMAXPROCS(0))
+	log.Printf("*********** > NumCPU: %v\n", runtime.NumCPU())
+	log.Printf("*********** > GOMAXPROCS: %v\n", runtime.GOMAXPROCS(0))
+	log.Printf("*********** > Port: %v\n", port)
+	log.Printf("*********** > Log file: %v\n", logFile)
+	log.Printf("*********** > Prime: %v\n", prime)
+	log.Printf("*********** > Block size: %v\n", blockSolveSize)
+	log.Println("***********************************")
 	
 
 	handler := new(Handler)
-	handler.Channel = make(chan struct{}, 1)
+	handler.Channel = make(chan struct{}, 1) // chan of size 1, works as a mutex
 	rpc.Register(handler)
 
 	listener, err := net.Listen("tcp", ":" + port)
