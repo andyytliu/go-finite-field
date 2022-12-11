@@ -144,13 +144,13 @@ func main() {
 
 	os.Remove(logFile)
 	file, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, 0666)
-    if err != nil {
-        log.Fatal(err)
-    }
-    log.SetOutput(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.SetOutput(file)
 
 	log.Println("***********************************")
-    log.Println("*********** Start logging")
+	log.Println("*********** Start logging")
 	log.Printf("*********** > NumCPU: %v\n", runtime.NumCPU())
 	log.Printf("*********** > GOMAXPROCS: %v\n", runtime.GOMAXPROCS(0))
 	log.Printf("*********** > Port: %v\n", port)
