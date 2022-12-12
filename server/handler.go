@@ -21,19 +21,32 @@ type Handler struct {
 type Reply struct {
 	NumEq int
 	NumSol int
+	BlockSize int
+}
+
+func NewHandler() *Handler {
+	handler := new(Handler)
+	// channel of size 1, works as a mutex
+	handler.Channel = make(chan struct{}, 1)
+	return handler
 }
 
 func (handler *Handler) Status(_ int, reply *Reply) error {
 	reply.NumEq = len(equations)
 	reply.NumSol = len(solutions)
+	reply.BlockSize = BlockSolveSize
 	return nil
 }
 
 func (handler *Handler) SetBlock(size int, reply *Reply) error {
 	go func() {
 		handler.Channel <- struct{}{}
-		BlockSolveSize = size
-		log.Printf("*********** Set block size to: %v\n", size)
+		if size <= 0 {
+			log.Printf("*********** Block size has to be positive: %v\n", size)
+		} else {
+			BlockSolveSize = size
+			log.Printf("*********** Set block size to: %v\n", size)
+		}
 		<- handler.Channel
 	}()
 	return nil

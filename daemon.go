@@ -46,8 +46,7 @@ func main() {
 	log.Println("***********************************")
 	
 
-	handler := new(server.Handler)
-	handler.Channel = make(chan struct{}, 1) // chan of size 1, works as a mutex
+	handler := server.NewHandler()
 	rpc.Register(handler)
 
 	listener, err := net.Listen("tcp", ":" + port)
