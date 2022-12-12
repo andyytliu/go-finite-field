@@ -6,10 +6,6 @@ import (
 	"sync"
 )
 
-func doMod(x FF) FF {
-	return x % SolverPrime
-}
-
 // Plug existing solutions into equations
 func UpdateEquations(
 	equations []*map[Index]FF,
@@ -30,9 +26,9 @@ func UpdateEquations(
 						if v == 0 {
 							continue
 						}
-						var newCoef FF = doMod(coef * v)
+						var newCoef FF = Mod(coef * v)
 						if oldCoef, ok2 := newEq[k]; ok2 {
-							newCoef = doMod(newCoef + oldCoef) 
+							newCoef = Mod(newCoef + oldCoef) 
 							if newCoef == 0 {
 								// Delete zero terms
 								delete(newEq, k)
@@ -45,7 +41,7 @@ func UpdateEquations(
 					}
 				} else {
 					if oldCoef, ok2 := newEq[idx]; ok2 {
-						coef = doMod(coef + oldCoef) 
+						coef = Mod(coef + oldCoef) 
 						if coef == 0 {
 							// Delete zero terms
 							delete(newEq, idx)
@@ -114,7 +110,7 @@ func SolveEquation(
 			continue
 		}
 
-		newSol[k] = doMod(invCoef * v)
+		newSol[k] = Mod(invCoef * v)
 
 		// And modify trans indexing accordingly
 		if idxs, ok := solTransIndex[k]; ok {
@@ -157,9 +153,9 @@ func SolveEquation(
 		go func(eq map[Index]FF) {
 			if coef, ok := eq[idxToSolve]; ok {
 				for k, v := range newSol {
-					var newCoef FF = doMod(coef * v)
+					var newCoef FF = Mod(coef * v)
 					if oldCoef, ok := eq[k]; ok {
-						newCoef = doMod(newCoef + oldCoef)
+						newCoef = Mod(newCoef + oldCoef)
 						if newCoef == 0 {
 							// Delete zero terms
 							delete(eq, k)
@@ -187,10 +183,10 @@ func SolveEquation(
 			go func(idx Index) {
 				idxCoef := solutions[idx][idxToSolve]
 				for k, v := range newSol {
-					var newCoef FF = doMod(idxCoef * v)
+					var newCoef FF = Mod(idxCoef * v)
 
 					if oldCoef, ok := solutions[idx][k]; ok {
-						newCoef = doMod(newCoef + oldCoef)
+						newCoef = Mod(newCoef + oldCoef)
 						if newCoef == 0 {
 							// Delete zero terms
 							delete(solutions[idx], k)

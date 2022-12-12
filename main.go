@@ -37,16 +37,18 @@ func main() {
 
 	fmt.Println("**********************************************")
 	fmt.Println("****")
-	fmt.Println("****    Go Finite Field")
-	fmt.Println("****      A Linear Finite-Field Solver")
+	fmt.Println("****    Go Finite Field    v0.6")
+	fmt.Println("****        A Linear Finite-Field Solver")
+	fmt.Println("****")
+	fmt.Println("****      Author: Andy Yu-Ting Liu")
 	fmt.Println("****")
 	fmt.Println("**********************************************")
 	fmt.Println("********")
-	fmt.Printf("********   Log file: %v\n", logFile)
-	fmt.Printf("********   NumCPU/GOMAXPROCS: %v/%v\n",
+	fmt.Printf("********      Log file: %v\n", logFile)
+	fmt.Printf("********      NumCPU/GOMAXPROCS: %v/%v\n",
 		runtime.NumCPU(), runtime.GOMAXPROCS(0))
-	fmt.Printf("********   Prime: %v\n", prime)
-	fmt.Printf("********   Block size: %v\n", server.BlockSolveSize)
+	fmt.Printf("********      Prime: %v\n", prime)
+	fmt.Printf("********      Block size: %v\n", server.BlockSolveSize)
 	fmt.Println("********")
 	fmt.Println("**********************************************")
 
