@@ -1,27 +1,18 @@
-package main
+package server
 
 import (
 	. "github.com/andyytliu/go-finite-field/solver"
-	"flag"
 	"log"
-	"net"
-	"net/rpc"
-	"os"
-	"runtime"
 )
 
 var (
-	port string
-	logFile string
-	prime int
-	blockSolveSize int
+	BlockSolveSize int = 200
 
  	equations []*map[Index]FF
 	solutions = make(map[Index]map[Index]FF)
 	solTransIndex = make(map[Index]map[Index]bool)
-	invMap = make(map[FF]FF)
+	InvMap = make(map[FF]FF)
 )
-
 
 type Handler struct {
 	Channel chan struct{}
@@ -41,7 +32,7 @@ func (handler *Handler) Status(_ int, reply *Reply) error {
 func (handler *Handler) SetBlock(size int, reply *Reply) error {
 	go func() {
 		handler.Channel <- struct{}{}
-		blockSolveSize = size
+		BlockSolveSize = size
 		log.Printf("*********** Set block size to: %v\n", size)
 		<- handler.Channel
 	}()
@@ -83,9 +74,9 @@ func (handler *Handler) SolveEquations(totalNumToSolve int, reply *Reply) error 
 		totalNumToSolve  = len(equations)
 	}
 	
-	numToSolve := blockSolveSize
+	numToSolve := BlockSolveSize
 	log.Printf("*********** Solving %v equations in blocks of %v\n",
-		totalNumToSolve, blockSolveSize)
+		totalNumToSolve, BlockSolveSize)
 
 	var err error
 
@@ -96,7 +87,7 @@ func (handler *Handler) SolveEquations(totalNumToSolve int, reply *Reply) error 
 			if totalNumToSolve < numToSolve {
 				numToSolve = totalNumToSolve
 			} else {
-				numToSolve = blockSolveSize			
+				numToSolve = BlockSolveSize			
 			}
 			totalNumToSolve -= numToSolve
 
@@ -106,7 +97,7 @@ func (handler *Handler) SolveEquations(totalNumToSolve int, reply *Reply) error 
 			log.Printf("Start solving batch of %v equations\n", numToSolve)
 			for i := 0; i < numToSolve; i++ {
 				err = SolveEquation(*equations[i], equations[i+1:numToSolve],
-					invMap, solutions, solTransIndex)
+					InvMap, solutions, solTransIndex)
 				if err != nil {
 					break
 				}
@@ -127,48 +118,4 @@ func (handler *Handler) SolveEquations(totalNumToSolve int, reply *Reply) error 
 	}()
 
 	return nil
-}
-
-
-func main() {
-
-	flag.StringVar(&port, "port", "8080", "Port number for the server to listen to")
-	flag.StringVar(&logFile, "log", "logs.txt", "Name for the log file")
-	flag.IntVar(&prime, "p", 46337, "Prime number to use in modular calculation")
-	flag.IntVar(&blockSolveSize, "block", 200, "Block size of equations to solve in parallel")
-	flag.Parse()
-
-	SolverPrime = FF(prime)
-	InitInvMap(invMap)
-
-
-	os.Remove(logFile)
-	file, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.SetOutput(file)
-
-	log.Println("***********************************")
-	log.Println("*********** Start logging")
-	log.Printf("*********** > NumCPU: %v\n", runtime.NumCPU())
-	log.Printf("*********** > GOMAXPROCS: %v\n", runtime.GOMAXPROCS(0))
-	log.Printf("*********** > Port: %v\n", port)
-	log.Printf("*********** > Log file: %v\n", logFile)
-	log.Printf("*********** > Prime: %v\n", prime)
-	log.Printf("*********** > Block size: %v\n", blockSolveSize)
-	log.Println("***********************************")
-	
-
-	handler := new(Handler)
-	handler.Channel = make(chan struct{}, 1) // chan of size 1, works as a mutex
-	rpc.Register(handler)
-
-	listener, err := net.Listen("tcp", ":" + port)
-	if err != nil {
-		log.Println(">>>>>>>>>>> errorr in server: " + err.Error())
-	}
-	defer listener.Close()
-	
-	rpc.Accept(listener)
 }

@@ -1,15 +1,11 @@
 package main
 
 import (
+	"github.com/andyytliu/go-finite-field/server"
 	"flag"
 	"fmt"
 	"net/rpc"
 )
-
-type Reply struct {
-	NumEq int
-	NumSol int
-}
 
 var (
 	port string
@@ -39,7 +35,7 @@ func main() {
 	}
 
 
-	reply := new(Reply)
+	reply := new(server.Reply)
 
 	if status {
 		err = client.Call("Handler.Status", 0, &reply)
