@@ -2,6 +2,7 @@ package solver
 
 import (
 	"fmt"
+	"sync"
 )
 
 var (
@@ -22,15 +23,23 @@ func InitInvMap(invMap map[FF]FF) {
 	prim := GetPrimitive()
 	inv := InverseMod(prim, SolverPrime)
 
-	k, v := prim, -inv
-	invMap[k] = v
-	invMap[-k] = -v
+	sem := make(chan struct{}, 2 * (SolverPrime - 1))
+	mutex := sync.Mutex{}
 
-	for k != 1 {
-		k = Mod(k * prim)
-		v = Mod(v * inv)
-		invMap[k] = v
-		invMap[-k] = -v
+	for i := FF(1); i < SolverPrime; i++ {
+		go func(i FF) {
+			k := PowerMod(prim, i)
+			v := -PowerMod(inv, i)
+			mutex.Lock()
+			invMap[k] = v
+			invMap[-k] = -v
+			mutex.Unlock()
+			sem <- struct{}{}
+		}(i)
+	}
+
+	for i := FF(1); i < SolverPrime; i++ {
+		<- sem
 	}
 
 	if FF(len(invMap)) != 2 * (SolverPrime - 1) {
