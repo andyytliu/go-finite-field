@@ -23,7 +23,6 @@ func main() {
 	flag.Parse()
 
 	solver.SolverPrime = solver.FF(prime)
-	// solver.InitInvMap(server.InvMap) // Deprecated
 
 
 	os.Remove(logFile)

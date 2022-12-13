@@ -21,11 +21,11 @@ func main() {
 
 	flag.StringVar(&port, "port", "8080", "Port number the server listens to")
 	flag.BoolVar(&status, "status", false, "Look up status of the solver: numbers of equations and solutions")
-	flag.StringVar(&equationsFile, "read_equations", "", "Read in equations to be solved")
-	flag.StringVar(&solutionsFile, "read_solutions", "", "Read in existing solutions")
-	flag.StringVar(&writeFile, "write_solutions", "", "Write solutions to file")
-	flag.IntVar(&numEqToSolve, "solve_equations", 0, "Solve a given number of equations")
-	flag.IntVar(&blockSize, "set_block", 0, "Set the block size in equation solving")
+	flag.StringVar(&equationsFile, "read_eq", "", "Read in equations to be solved")
+	flag.StringVar(&solutionsFile, "read_sol", "", "Read in existing solutions")
+	flag.StringVar(&writeFile, "write_sol", "", "Write solutions to file")
+	flag.IntVar(&numEqToSolve, "solve", 0, "Solve a given number of equations")
+	flag.IntVar(&blockSize, "block", 0, "Set the block size in equation solving")
 	flag.Parse()
 
 

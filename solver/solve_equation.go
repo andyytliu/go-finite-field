@@ -69,7 +69,6 @@ func UpdateEquations(
 func SolveEquation(
 	equation map[Index]FF,  // single eq to solve
 	equations []*map[Index]FF,  // block equations to update
-	invMap map[FF]FF,
 	solutions map[Index]map[Index]FF,
 	solTransIndex map[Index]map[Index]bool) error {
 	
@@ -101,7 +100,6 @@ func SolveEquation(
 
 
 	// set to (-1/c) where c is the coef of idxToSolve
-	// var invCoef FF  = invMap[newEq[idxToSolve]]
 	var invCoef = -InverseMod(newEq[idxToSolve])
 
 	// Add new solution

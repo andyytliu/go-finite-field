@@ -11,7 +11,6 @@ var (
  	equations []*map[Index]FF
 	solutions = make(map[Index]map[Index]FF)
 	solTransIndex = make(map[Index]map[Index]bool)
-	InvMap = make(map[FF]FF) // Deprecated
 )
 
 type Handler struct {
@@ -109,8 +108,8 @@ func (handler *Handler) SolveEquations(totalNumToSolve int, reply *Reply) error 
 			
 			log.Printf("Start solving batch of %v equations\n", numToSolve)
 			for i := 0; i < numToSolve; i++ {
-				err = SolveEquation(*equations[i], equations[i+1:numToSolve],
-					InvMap, solutions, solTransIndex)
+				err = SolveEquation(*equations[i],
+					equations[i+1:numToSolve], solutions, solTransIndex)
 				if err != nil {
 					break
 				}
