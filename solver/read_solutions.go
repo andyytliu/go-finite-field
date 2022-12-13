@@ -71,14 +71,14 @@ func ReadSolutions(file_name string,
 					fields[2*i + 1] + ". " + err.Error())
 			}
 
-			coef, err := strconv.ParseInt(fields[2*i + 2], 10, 32)
+			coef, err := strconv.ParseInt(fields[2*i + 2], 10, 64)
 			if err != nil {
 				log.Println(">>>>>>>>>>> error when parsing coef in solution: " +
 					fields[2*i + 2] + ". " + err.Error())
 			}
 
 			// Update solution
-			solution[Index(idx2)] = FF(coef)
+			solution[Index(idx2)] = Mod(FF(coef))
 			// Update solution transpose indexing
 			if idxs, ok := solTransIndex[Index(idx2)]; ok {
 				idxs[Index(idx1)] = true
