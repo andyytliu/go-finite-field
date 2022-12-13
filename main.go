@@ -23,7 +23,7 @@ func main() {
 	flag.Parse()
 
 	solver.SolverPrime = solver.FF(prime)
-	solver.InitInvMap(server.InvMap)
+	// solver.InitInvMap(server.InvMap) // Deprecated
 
 
 	os.Remove(logFile)
@@ -37,7 +37,7 @@ func main() {
 
 	fmt.Println("**********************************************")
 	fmt.Println("****")
-	fmt.Println("****    Go Finite Field    v0.6")
+	fmt.Println("****    Go Finite Field    v0.7")
 	fmt.Println("****        A Linear Finite-Field Solver")
 	fmt.Println("****")
 	fmt.Println("****      Author: Andy Yu-Ting Liu")

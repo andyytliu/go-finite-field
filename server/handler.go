@@ -11,7 +11,7 @@ var (
  	equations []*map[Index]FF
 	solutions = make(map[Index]map[Index]FF)
 	solTransIndex = make(map[Index]map[Index]bool)
-	InvMap = make(map[FF]FF)
+	InvMap = make(map[FF]FF) // Deprecated
 )
 
 type Handler struct {

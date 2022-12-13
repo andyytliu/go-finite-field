@@ -25,15 +25,16 @@ func GCD(a, b FF) (FF, FF, FF) {
 }
 
 
-// Returns a^(-1) modulo p
-func InverseMod(a, p FF) FF {
-	gcd, inv, _ := GCD(a, p)
+// Returns a^(-1) modulo SolverPrime
+func InverseMod(x FF) FF {
+	gcd, inv, _ := GCD(x, SolverPrime)
 	if gcd == 1 {
-		return inv % p
+		return Mod(inv)
 	} else if gcd == -1 {
-		return -inv % p
+		return -Mod(inv)
 	}
-	panic(fmt.Sprintf("Error taking inverse of %v modulo %v", a, p))
+	panic(fmt.Sprintf(
+		"Error taking inverse of %v modulo %v", x, SolverPrime))
 }
 
 // Returns a^n modulo SolverPrime

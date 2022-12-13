@@ -101,7 +101,8 @@ func SolveEquation(
 
 
 	// set to (-1/c) where c is the coef of idxToSolve
-	var invCoef FF  = invMap[newEq[idxToSolve]]
+	// var invCoef FF  = invMap[newEq[idxToSolve]]
+	var invCoef = -InverseMod(newEq[idxToSolve])
 
 	// Add new solution
 	newSol := make(map[Index]FF)

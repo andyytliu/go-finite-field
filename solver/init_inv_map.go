@@ -18,10 +18,11 @@ var (
 // 	}
 // }
 
+// Deprecated
 func InitInvMap(invMap map[FF]FF) {
 	// Primitive root
 	prim := GetPrimitive()
-	inv := InverseMod(prim, SolverPrime)
+	inv := InverseMod(prim)
 
 	sem := make(chan struct{}, 2 * (SolverPrime - 1))
 	mutex := sync.Mutex{}
