@@ -56,12 +56,35 @@ func ReadEquations(file_name string,
 					fields[2*i] + ". " + err.Error())
 			}
 			
-			coef, err := strconv.ParseInt(fields[2*i+1], 10, 64)
-			if err != nil {
+
+			var coef FF
+			split := strings.Split(fields[2*i+1], "/")
+			switch len(split) {
+			case 1:
+				raw, err := strconv.ParseInt(fields[2*i+1], 10, 64)
+				if err != nil {
+					log.Println(">>>>>>>>>>> error when parsing coef: " +
+						fields[2*i+1] + ". " + err.Error())
+				}
+				coef = Mod(FF(raw))
+			case 2:
+				num, err := strconv.ParseInt(split[0], 10, 64)
+				if err != nil {
+					log.Println(">>>>>>>>>>> error when parsing coef: " +
+						fields[2*i+1] + ". " + err.Error())
+				}
+				den, err := strconv.ParseInt(split[1], 10, 64)
+				if err != nil {
+					log.Println(">>>>>>>>>>> error when parsing coef: " +
+						fields[2*i+1] + ". " + err.Error())
+				}
+				coef = Mod( Mod(FF(num)) * InverseMod(FF(den)) )
+			default:
 				log.Println(">>>>>>>>>>> error when parsing coef: " +
-					fields[2*i] + ". " + err.Error())
+						fields[2*i+1] + ". ")
 			}
-			equation[Index(idx)] = Mod(FF(coef))
+
+			equation[Index(idx)] = coef
 		}
 
 		if len(equation) != 0 {

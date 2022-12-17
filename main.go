@@ -36,7 +36,7 @@ func main() {
 
 	fmt.Println("**********************************************")
 	fmt.Println("****")
-	fmt.Println("****    Go Finite Field    v0.7")
+	fmt.Println("****    Go Finite Field    v0.8")
 	fmt.Println("****        A Linear Finite-Field Solver")
 	fmt.Println("****")
 	fmt.Println("****      Author: Andy Yu-Ting Liu")
