@@ -2,8 +2,10 @@ package solver
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
+	"math/big"
 	"os"
 	"strings"
 	"strconv"
@@ -18,6 +20,9 @@ func ReadEquations(file_name string,
 		return
 	}
 	defer file.Close()
+
+	primeBig := new(big.Int)
+	primeBig.SetString(fmt.Sprint(SolverPrime), 10)
 
 	reader := bufio.NewReader(file)
 	for {
@@ -61,24 +66,33 @@ func ReadEquations(file_name string,
 			split := strings.Split(fields[2*i+1], "/")
 			switch len(split) {
 			case 1:
-				raw, err := strconv.ParseInt(fields[2*i+1], 10, 64)
-				if err != nil {
+				raw := new(big.Int)
+				raw, ok := raw.SetString(fields[2*i+1], 10)
+				if !ok {
 					log.Println(">>>>>>>>>>> error when parsing coef: " +
-						fields[2*i+1] + ". " + err.Error())
+						fields[2*i+1] + ". ")
 				}
-				coef = Mod(FF(raw))
+				raw.Mod(raw, primeBig)
+				coef = Mod(FF(raw.Int64()))
 			case 2:
-				num, err := strconv.ParseInt(split[0], 10, 64)
-				if err != nil {
+				num := new(big.Int)
+				den := new(big.Int)
+
+				num, ok := num.SetString(split[0], 10)
+				if !ok {
 					log.Println(">>>>>>>>>>> error when parsing coef: " +
-						fields[2*i+1] + ". " + err.Error())
+						fields[2*i+1] + ". ")
 				}
-				den, err := strconv.ParseInt(split[1], 10, 64)
-				if err != nil {
+				num.Mod(num, primeBig)
+
+				den, ok = den.SetString(split[1], 10)
+				if !ok {
 					log.Println(">>>>>>>>>>> error when parsing coef: " +
-						fields[2*i+1] + ". " + err.Error())
+						fields[2*i+1] + ". ")
 				}
-				coef = Mod( Mod(FF(num)) * InverseMod(FF(den)) )
+				den.Mod(den, primeBig)
+
+				coef = Mod( FF(num.Int64()) * InverseMod(FF(den.Int64())) )
 			default:
 				log.Println(">>>>>>>>>>> error when parsing coef: " +
 						fields[2*i+1] + ". ")
